@@ -10,10 +10,10 @@ from simulation import Simulation
 
                                  # We call the network and attack it
 
-Erdos = Simulation(100, 0.2)
+Erdos = Simulation(10, 0.2)
 # Erdos.Fragility()
 Erdos.Attack()
-# Erdos.NumberOfGiantComponentNode()
+# Erdos.NumberOfGiantComponentNode(Erdos.g)
 #
 #
 plt.scatter(Erdos.fragility, Erdos.resilience)

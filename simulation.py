@@ -18,27 +18,35 @@ class Simulation:
         self.max_len = 0
         self.sum_path_len = 0
 
-    def NumberOfGiantComponentNode(self):
+    def NumberOfGiantComponentNode(self, g):
+        # G = g
+        # ps = nx.spring_layout(G)
+        # nx.draw(G)
+        # plt.savefig('fig.png', bbox_inches='tight')
+
         max_len = 0
         sum_path_len = 0
-        for i in sorted(nx.connected_components(self.g), key=len, reverse=True):
+        for i in sorted(nx.connected_components(g), key=len, reverse=True):
             if (len(i) >= max_len):
-                print("The degree of giant component:" + str(max_len))
-                return len(i)
+                max_len = len(i)
+                # print("The degree of giant component:" + str(max_len))
+                return max_len
             else:
-                print("The degree of giant component:" + str(max_len))
+                # print("The degree of giant component:" + str(max_len))
                 return max_len
 
-    def Resilience(self , max_len):
+    def Resilience(self, gc):
         S = 0
-        for i in range(0, self.n_node):
+        for i in range(1, self.n_node + 1):
             # Ng = self.NumberOfGiantComponentNode(self.g)
-            Ng = max_len
-
-            S += Ng / self.n_node
-        R = (1 / self.n_node) * S
+            ng = gc
+            # print("step:" + str(self.n_node))
+            # print("self.n_node:" + str(i))
+            S += ng / i
+            # print("sum sigma:" + str(S))
+        result = (1 / self.n_node) * S
         # print(R)
-        return R
+        return result
 
     def Fragility(self):
         # adj_matrix = nx.adjacency_matrix(self.g)
@@ -66,14 +74,9 @@ class Simulation:
             edge_i = self.g.edges(node_i)
             self.g.remove_edges_from(list(edge_i))
 
-            max_len = 0
-            sum_path_len = 0
-            for i in sorted(nx.connected_components(self.g), key=len, reverse=True):
-                if (len(i) >= max_len):
-                    max_len = len(i)
-                else:
-                    max_len = max_len
-            print("The degree of giant component:" + str(max_len))
+            gc = self.NumberOfGiantComponentNode(self.g)
+            print("The degree of giant component:")
+            print(gc)
 
             nx.draw_networkx(self.g)
             plt.show()
@@ -81,7 +84,7 @@ class Simulation:
 
             self.g.remove_edges_from(list(edge_i))
             self.fragility += [self.Fragility()]
-            self.resilience += [self.Resilience(max_len)]
+            self.resilience += [self.Resilience(gc)]
             self.n_edge = self.g.number_of_edges()
 
         self.fragility.pop()
